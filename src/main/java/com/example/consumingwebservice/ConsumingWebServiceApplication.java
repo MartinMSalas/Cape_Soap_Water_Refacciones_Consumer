@@ -1,12 +1,16 @@
 package com.example.consumingwebservice;
 
-import com.example.consumingwebservice.endpoint.CountryClient;
-import com.example.consumingwebservice.entity.CountryExtended;
+import com.example.consumingwebservice.endpoint.WaterClient;
+import com.example.consumingwebservice.wsdl.SDTRefacciones;
+import com.example.consumingwebservice.wsdl.WSRefaccionesLISTARREFACCIONESResponse;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import com.example.consumingwebservice.wsdl.GetCountryResponse;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @SpringBootApplication
 public class ConsumingWebServiceApplication {
 
@@ -16,19 +20,25 @@ public class ConsumingWebServiceApplication {
 
 
 	@Bean
-	CommandLineRunner lookup(CountryClient countryClient) {
+	CommandLineRunner lookup(WaterClient waterClient) {
 		return args -> {
 			String country = "Spain";
 
 			if (args.length > 0) {
 				country = args[0];
 			}
-			GetCountryResponse response = countryClient.getCountry(country);
 
-			System.err.println(response.getCountry().getCurrency());
+			WSRefaccionesLISTARREFACCIONESResponse response = waterClient.getListadoRefacciones();
 
-			CountryExtended countryExtended = new CountryExtended(response.getCountry());
-			System.out.println(countryExtended.toString());
+			System.err.println(response.getListado());
+
+			// CountryExtended countryExtended = new CountryExtended(response.getCountry());
+			//System.out.println(countryExtended.toString());
+			List listado = response.getListado().getSDTRefacciones();
+			for (SDTRefacciones refaccion : (List<SDTRefacciones>) listado) {
+				System.out.println(refaccion.getAbonadoTitularNombre());
+			}
+			// System.out.println(response.getListado().getSDTRefacciones().get(0).getAbonadoTitularNombre());
 		};
 	}
 

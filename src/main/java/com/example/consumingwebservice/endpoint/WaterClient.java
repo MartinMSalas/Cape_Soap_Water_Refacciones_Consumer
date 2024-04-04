@@ -1,13 +1,14 @@
 package com.example.consumingwebservice.endpoint;
 
+import com.example.consumingwebservice.wsdl.ArrayOfSDTRefacciones;
+import com.example.consumingwebservice.wsdl.WSRefaccionesLISTARREFACCIONES;
+import com.example.consumingwebservice.wsdl.WSRefaccionesLISTARREFACCIONESResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import org.springframework.ws.soap.client.core.SoapActionCallback;
 
-import com.example.consumingwebservice.wsdl.GetCountryRequest;
-import com.example.consumingwebservice.wsdl.GetCountryResponse;
 
 
 public class WaterClient extends WebServiceGatewaySupport{
@@ -16,19 +17,30 @@ public class WaterClient extends WebServiceGatewaySupport{
 
     // https://adcsapem.com.ar:8080/ComercialProduccion/aws_refacciones.aspx
     //  https://adcsapem.com.ar:8080/ComercialProduccion/aws_refacciones.aspx?wsdl
-    public GetCountryResponse getCountry(String country) {
-
+    public WSRefaccionesLISTARREFACCIONESResponse getListadoRefacciones() {
+/*
         GetCountryRequest request = new GetCountryRequest();
         request.setName(country);
+*/
+        WSRefaccionesLISTARREFACCIONES request = new WSRefaccionesLISTARREFACCIONES();
+        log.info("Requesting listar refacciones ");
 
-        log.info("Requesting location for " + country);
 
+        // WSRefaccionesLISTARREFACCIONESResponse
+        WSRefaccionesLISTARREFACCIONESResponse response= (WSRefaccionesLISTARREFACCIONESResponse) getWebServiceTemplate()
+                .marshalSendAndReceive("https://adcsapem.com.ar:8080/ComercialProduccion/aws_refacciones.aspx", request,
+                        new SoapActionCallback(
+                                "http://spring.io/guides/gs-producing-web-service/GetCountryRequest"));
 
+        //ArrayOfSDTRefacciones getListado()
         // https://adcsapem.com.ar:8080/ComercialProduccion/aws_refacciones.aspx?
+        /*
         GetCountryResponse response = (GetCountryResponse) getWebServiceTemplate()
                 .marshalSendAndReceive("https://adcsapem.com.ar:8080/ComercialProduccion/aws_refacciones.aspx", request,
                         new SoapActionCallback(
                                 "http://spring.io/guides/gs-producing-web-service/GetCountryRequest"));
+
+         */
         return response;
     }
 }
